@@ -4,7 +4,6 @@ from datetime import date
 
 class User:
 
-
     def __init__(self, _name, _birthday):
         self.name = _name
         self.date_of_dirth = date(_birthday[0], _birthday[1], _birthday[2])
@@ -56,5 +55,41 @@ class SocialNetwork:
         # 5
         print(f"Count friends of {self.users[1].name} {len(self.users[2].friends)}")
 
+class Avatar():
+    def add_avatar(self, avatar):
+        self.avatar = avatar
+
+class PremiumMode():
+    def enable_premium_mode(self, mode):
+        self.premium_mode = mode
+
+class Author(User, Avatar, PremiumMode):
+    def __init__(self):
+        # super().__init__(Author)
+        self.posts = []
+
+    def add_post(self, text):
+      self.posts.append(text)
+
+    def remove_post(self, index):
+        if index > 0 and index < len(self.posts)+1:
+            self.posts.pop(index-1)
+
+
+
+author = Author()
+author.add_post("1")
+author.add_post("2")
+author.add_post("3")
+print(author.posts)
+author.remove_post(1)
+print(author.posts)
+
+author2 = Author()
+author2.add_avatar("avatar")
+
+author3 = Author()
+author3.enable_premium_mode(True)
+
 pp = SocialNetwork()
-pp.init_users()
+# pp.init_users()
