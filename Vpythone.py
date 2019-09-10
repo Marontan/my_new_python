@@ -103,6 +103,7 @@ class SocialNetwork:
         for i in self.users:
             if i.name == item:
                 return i
+        return None
 
 
 
@@ -124,7 +125,7 @@ network.init_users()
 network.add_user(authorRoss)
 network.add_user(authorCh)
 network.add_user(authorJoe)
-print(network["Lis"])
+print(network["Lisi"])
 
 
 
@@ -150,4 +151,4 @@ carD = Car("D", 1)
 carF = Car("F", 4)
 # print(carD < carF)
 # print(len(carD))
-# list(filer(lambda x: x == "Alex", user))
+# list(filter(lambda x: x == "Alex", user))
