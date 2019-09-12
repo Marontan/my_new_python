@@ -1,4 +1,5 @@
 from datetime import date
+import csv
 
 class User:
     def __init__(self, _name, _birthday):
@@ -14,25 +15,18 @@ class User:
 
     def get_friends(self):
         return self.friends
-
     def __str__(self):
         return f"This is {self.name}"
-
     def __len__(self):
         return len(self.friends)
-
     def __ge__(self, other):
         return len(self.friends) >= len(other.friends)
-
     def __gt__(self, other):
         return len(self.friends) > len(other.friends)
-
     def __le__(self, other):
         return len(self.friends) <= len(other.friends)
-
     def __lt__(self, other):
         return len(self.friends) < len(other.friends)
-
     def __eq__(self, other):
         return len(self.friends) == len(other.friends)
 
@@ -105,6 +99,13 @@ class SocialNetwork:
                 return i
         return None
 
+    def export_users_to_json(self):
+        with open("users.csv", "wt") as myFile:
+            fieldnames = ["name", "birthday"]
+            writer = csv.DictWriter(myFile, fieldnames = fieldnames)
+            writer.writeheader()
+            for us in self.users:
+                writer.writerow({'name': us.name, 'birthday': f" {str(us.date_of_dirth)} "})
 
 
 
@@ -112,11 +113,7 @@ class SocialNetwork:
 authorRoss = Author("Ross", [1982, 7, 3])
 authorCh = Author("Chendler", [1984, 9, 23])
 authorCh.add_avatar("avatar")
-print(authorRoss)
 authorCh.add_friends(authorRoss)
-print(len(authorCh))
-print(authorCh <= authorRoss)
-
 authorJoe = Author("Joe", [1985, 11, 14])
 authorJoe.enable_premium_mode()
 
@@ -125,7 +122,8 @@ network.init_users()
 network.add_user(authorRoss)
 network.add_user(authorCh)
 network.add_user(authorJoe)
-print(network["Lisi"])
+
+network.export_users_to_json()
 
 
 
