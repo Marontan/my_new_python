@@ -2,32 +2,62 @@ from datetime import date
 import csv
 import networkx as nx
 import matplotlib.pyplot as plt
+from peewee import SqliteDatabase, Model, CharField, DateField, BooleanField, ForeignKeyField
 
-class User:
-    def __init__(self, _name, _birthday):
-        self.name = _name
-        self.date_of_dirth = date(_birthday[0], _birthday[1], _birthday[2])
+db = SqliteDatabase('SocialNetwork.db')
+
+class User(Model):
+    name = CharField()
+    date_of_birth = DateField()
+    class Meta:
+        database = db
+
     def get_age(self):
         return int((date.today() - self.date_of_dirth).days / 365)
 
-class SocialNetwork:
+
+
+class Friendship(Model):
+    friend1=CharField()
+    friend2 = CharField()
+    class Meta:
+        database = db
+
+class SocialNetwork(Model):
     def __init__(self):
         self.graph_users = nx.Graph()
+        self.init_users()
+        self.create_table()
+
+    def create_table(self):
+        User.create_table()
+        if len(list(User.select())) == 0:
+            User.create(name="Rachel", date_of_birth=date(1999, 1, 23))
+            User.create(name="Monika", date_of_birth=date(1989, 8, 4))
+            User.create(name="Phoebe", date_of_birth=date(1995, 3, 12))
+            User.create(name="Ross", date_of_birth=date(1982, 7, 3))
+            User.create(name="Chandler", date_of_birth=date(1984, 9, 23))
+            User.create(name="Joey", date_of_birth=date(1985, 11, 14))
+            Friendship.create_table()
+            Friendship.create(friend1="Rachel", friend2="Monika")
+            Friendship.create(friend1="Rachel", friend2="Chandler")
+            Friendship.create(friend1="Phoebe", friend2="Joey")
+            Friendship.create(friend1="Chandler", friend2="Ross")
+            Friendship.create(friend1="Chandler", friend2="Phoebe")
+
 
     def init_users(self):
-        self.add_user(User("Rachel", [1999, 1, 23]))
-        self.add_user(User("Monika", [1989, 8, 4]))
-        self.add_user(User("Phoebe", [1995, 3, 12]))
-        self.add_user(User("Ross", [1982, 7, 3]))
-        self.add_user(User("Chandler", [1984, 9, 23]))
-        self.add_user(User("Joey", [1985, 11, 14]))
+        User.create_table()
+        list_user = list(User.select())
+        for us in list_user:
+            user = User(us.name, us.date_of_birth)
+            self.add_user(user)
 
-        self.add_friendship("Rachel", "Monika")
-        self.add_friendship("Rachel", "Chandler")
-        self.add_friendship("Phoebe", "Joey")
-        self.add_friendship("Phoebe", "Rachel")
-        self.add_friendship("Chandler", "Ross")
-        self.add_friendship("Chandler", "Phoebe")
+        Friendship.create_table()
+        list_friendship = list(Friendship.select())
+        for fr in list_friendship:
+            self.add_friendship(fr.friend1, fr.friend2)
+
 
     def get_neighbours(self, user):
          return set(self.graph_users.neighbors(user))
@@ -52,7 +82,7 @@ class SocialNetwork:
 
 
 network = SocialNetwork()
-network.init_users()
+
 
 userFind = "Rachel"
 print(f"Friends of {userFind}:", network.recommend_friends(userFind))
