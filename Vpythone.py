@@ -52,7 +52,6 @@ class SocialNetwork(Model):
         for us in list_user:
             user = User(us.name, us.date_of_birth)
             self.add_user(user)
-
         Friendship.create_table()
         list_friendship = list(Friendship.select())
         for fr in list_friendship:
